@@ -1,5 +1,6 @@
 package com.example.ovman.chatbot;
 
+import android.app.Activity;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,15 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.google.gson.JsonElement;
-
-import java.util.Map;
-
 import ai.api.AIDataService;
 import ai.api.AIListener;
 import ai.api.AIServiceException;
-
 import ai.api.android.AIConfiguration;
 import ai.api.android.AIService;
 import ai.api.model.AIError;
@@ -23,11 +18,10 @@ import ai.api.model.AIRequest;
 import ai.api.model.AIResponse;
 import ai.api.model.Result;
 
-
-public class MainActivity extends AppCompatActivity implements AIListener {
+public class MainActivity extends Activity implements AIListener {
     private EditText editText;
-    private Button button;
     private TextView textView;
+    private Button button;
 
     private AIService aiService;
     private AIDataService aiDataService;
@@ -38,17 +32,17 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final AIConfiguration config = new AIConfiguration("a3bcd8a5ecc54b3fbb2bd50f4c759366",
+        final AIConfiguration configuration = new AIConfiguration("a3bcd8a5ecc54b3fbb2bd50f4c759366",
                 AIConfiguration.SupportedLanguages.Spanish,
                 AIConfiguration.RecognitionEngine.System);
 
-        aiDataService = new AIDataService(config);
-        aiService = AIService.getService(this, config);
+        aiDataService = new AIDataService(configuration);
+        aiService = AIService.getService(this, configuration);
         aiService.setListener(this);
 
         editText = (EditText)findViewById(R.id.mensaje);
-        button = (Button)findViewById(R.id.enviar);
         textView = (TextView)findViewById(R.id.chatView);
+        button = (Button)findViewById(R.id.enviar);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
                 new SendRequestTask(aiDataService).execute(editText.getText().toString());
             }
         });
+
     }
 
     public class SendRequestTask extends AsyncTask<String, String, AIResponse>{
@@ -83,46 +78,33 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         protected void onPostExecute(AIResponse aiResponse) {
             super.onPostExecute(aiResponse);
             Result result = aiResponse.getResult();
-            textView.append("You: " + result.getResolvedQuery() + "\r\n");
-            textView.append("Bot: " + result.getFulfillment().getSpeech() + "\r\n");
+            textView.append("Me: " + result.getResolvedQuery() + "\r\n");
+            textView.append("BB: " + result.getFulfillment().getSpeech() + "\r\n");
         }
     }
 
     @Override
     public void onResult(AIResponse result1) {
         Result result = result1.getResult();
-        /*
-        String parameterString = "";
-        if(result.getParameters() != null && !result.getParameters().isEmpty()){
-            for(final Map.Entry<String, JsonElement> entry : result.getParameters().entrySet()){
-                parameterString += ""
-            }
-
-        }*/
     }
 
     @Override
     public void onError(AIError error) {
-
     }
 
     @Override
     public void onAudioLevel(float level) {
-
     }
 
     @Override
     public void onListeningStarted() {
-
     }
 
     @Override
     public void onListeningCanceled() {
-
     }
 
     @Override
     public void onListeningFinished() {
-
     }
 }

@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements AIListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final AIConfiguration config = new AIConfiguration("73e6638ad2ec463388059aefc4fadb68",
+        final AIConfiguration config = new AIConfiguration("a3bcd8a5ecc54b3fbb2bd50f4c759366",
                 AIConfiguration.SupportedLanguages.Spanish,
                 AIConfiguration.RecognitionEngine.System);
 
